@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Sqlite; 
+using DocumentAI.API.Data;
+using DocumentAI.API.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +11,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite("Data Source=documentai.db"));
+builder.Services.AddScoped<TextExtractionService>();
+
 
 
 var app = builder.Build();
