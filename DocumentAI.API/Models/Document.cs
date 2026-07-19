@@ -1,3 +1,5 @@
+namespace DocumentAI.API.Models;
+
 public class Document
 {
     public int Id { get; set; }

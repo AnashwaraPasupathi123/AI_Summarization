@@ -1,3 +1,5 @@
+namespace DocumentAI.API.Models;
+
 public class Chunk
 {
     public int Id { get; set; }
