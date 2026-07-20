@@ -11,10 +11,14 @@ public class DocumentController : ControllerBase
 {
   private readonly AppDbContext _context;
   private readonly TextExtractionService _extractor;
-  public DocumentController(AppDbContext context, TextExtractionService extractor)
+  private readonly ChunkingService _chunker;
+  private readonly EmbeddingService _embedder;
+  public DocumentController(AppDbContext context, TextExtractionService extractor, ChunkingService chunker, EmbeddingService embedder)
   {
     _context = context;
     _extractor = extractor;
+    _chunker = chunker;
+    _embedder = embedder;
   }
   [HttpPost("upload")]
   public async Task<IActionResult> Upload(IFormFile file)
@@ -28,6 +32,18 @@ public class DocumentController : ControllerBase
         UploadedAt = DateTime.UtcNow
     };
     _context.Documents.Add(doc);
+    await _context.SaveChangesAsync();
+    var chunks =_chunker.ChunkText(text);
+    foreach (var chunk in chunks)
+    {
+      var embedding = await _embedder.GetEmbeddingAsync(chunk);
+       _context.Chunks.Add(new Chunk
+       {
+        DocumentId = doc.Id,
+        Content = chunk,
+        Embedding = embedding
+       });
+    }
     await _context.SaveChangesAsync();
     return Ok(new { documentId = doc.Id });
   }
