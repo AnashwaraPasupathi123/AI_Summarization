@@ -12,6 +12,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite("Data Source=documentai.db"));
 builder.Services.AddScoped<TextExtractionService>();
+builder.Services.AddHttpClient<EmbeddingService>();
 
 
 
