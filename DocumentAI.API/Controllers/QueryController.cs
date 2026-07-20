@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using DocumentAI.API.Services;
+using DocumentAI.API.Models;
+using DocumentAI.API.Data;
 
 namespace DocumentAI.API.Controllers;
 
@@ -25,7 +27,9 @@ public class QueryController : ControllerBase
 
         var relevantChunks = await _rag.SearchAsync(queryEmbedding);
 
-        var answer = await _llm.AnswerAsync(request.Question, relevantChunks);
+        var chunkTexts = relevantChunks.Select(c => c.Content).ToList();
+
+        var answer = await _llm.AnswerAsync(request.Question, chunkTexts);
 
         return Ok(new { answer });
     }

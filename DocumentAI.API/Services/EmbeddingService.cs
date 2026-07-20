@@ -1,26 +1,39 @@
-using System.Net.Http.Json;
-using System.Collections.Generic;
+using Microsoft.ML;
+using Microsoft.ML.Transforms.Text;
+using Microsoft.ML.Data;
+
 
 namespace DocumentAI.API.Services;
 
 public class EmbeddingService
 {
-    private readonly HttpClient _http;
-    public EmbeddingService (HttpClient http)
-    {
-        _http = http;
-    }
-    public async Task<float[]> GetEmbeddingAsync(string text)
-    {
-        var payload = new
-        {
-            inputs = text
-        };
-        var response = await _http.PostAsJsonAsync(
-            "https://api-inference.huggingface.co/models/sentence-transformers/all-MiniLM-L6-v2",
-            payload);
-        var result = await response.Content.ReadFromJsonAsync<List<List<float>>>();
+    private readonly MLContext _ml;
 
-        return result![0].ToArray();
+    public EmbeddingService()
+    {
+        _ml = new MLContext();
+    }
+
+    public Task<float[]> GetEmbeddingAsync(string text)
+    {
+        var data = new[] { new InputData { Text = text } };
+        var dataView = _ml.Data.LoadFromEnumerable(data);
+
+        var pipeline = _ml.Transforms.Text.FeaturizeText("Features", nameof(InputData.Text));
+
+        var model = pipeline.Fit(dataView);
+        var transformed = model.Transform(dataView);
+
+        // Extract features column
+        var featuresColumn = transformed.GetColumn<float[]>("Features");
+
+        float[] embedding = featuresColumn.First();
+
+        return Task.FromResult(embedding);
+    }
+
+    private class InputData
+    {
+        public string Text { get; set; }
     }
 }

@@ -12,8 +12,11 @@ builder.Services.AddOpenApi();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite("Data Source=documentai.db"));
 builder.Services.AddScoped<TextExtractionService>();
-builder.Services.AddHttpClient<EmbeddingService>();
-builder.Services.AddHttpClient<LLMService>();
+builder.Services.AddScoped<ChunkingService>();
+builder.Services.AddSingleton<EmbeddingService>();
+builder.Services.AddSingleton<LLMService>();
+builder.Services.AddScoped<RAGSearchService>();
+builder.Services.AddControllers();
 
 
 
@@ -27,7 +30,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.MapControllers();
 
 
 app.Run();
