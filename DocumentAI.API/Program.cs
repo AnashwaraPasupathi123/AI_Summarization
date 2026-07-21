@@ -16,6 +16,17 @@ builder.Services.AddScoped<ChunkingService>();
 builder.Services.AddSingleton<EmbeddingService>();
 builder.Services.AddSingleton<LLMService>();
 builder.Services.AddScoped<RAGSearchService>();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngular", policy =>
+    {
+        policy.AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials()
+              .SetIsOriginAllowed(origin => true);
+    });
+});
+
 builder.Services.AddControllers();
 
 
@@ -30,6 +41,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors("AllowAngular");
+
 app.MapControllers();
 
 

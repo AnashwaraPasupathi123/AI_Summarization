@@ -1,0 +1,28 @@
+<div class="upload-container">
+  <h2>Upload Document</h2>
+
+  <input 
+    type="file" 
+    (change)="onFileSelected($event)" 
+    accept=".pdf,.doc,.docx,.txt"
+  />
+
+  <button (click)="upload()" [disabled]="!selectedFile">Upload</button>
+
+  <!-- PDF Preview -->
+  <div *ngIf="pdfUrl" class="preview">
+    <embed [src]="pdfUrl" type="application/pdf" width="100%" height="600px" />
+  </div>
+
+  <!-- Word/Text fallback -->
+  <div *ngIf="selectedFile && !pdfUrl" class="no-preview">
+    <p>Preview not available for Word/Text files.</p>
+  </div>
+
+  <!-- File details -->
+  <div *ngIf="selectedFile" class="file-info">
+    <p><strong>Selected:</strong> {{ selectedFile.name }}</p>
+    <p><strong>Type:</strong> {{ selectedFile.type }}</p>
+    <p><strong>Size:</strong> {{ selectedFile.size / 1024 | number:'1.0-0' }} KB</p>
+  </div>
+</div>

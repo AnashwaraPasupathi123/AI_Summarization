@@ -1,0 +1,8 @@
+<div class="history-container">
+  <h2>Conversation History</h2>
+
+  <div *ngFor="let item of history" class="history-item">
+    <div class="sender">{{ item.sender }}</div>
+    <div class="text">{{ item.text }}</div>
+  </div>
+</div>

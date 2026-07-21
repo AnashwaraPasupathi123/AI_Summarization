@@ -1,0 +1,105 @@
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: #f8f9fb;
+  padding: 20px;
+}
+
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.msg-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+
+  &.user {
+    justify-content: flex-end;
+
+    .bubble {
+      background: #d1e7ff;
+      align-self: flex-end;
+    }
+  }
+
+  &.ai {
+    justify-content: flex-start;
+
+    .bubble {
+      background: #ffffff;
+    }
+  }
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+}
+
+.bubble {
+  padding: 12px 16px;
+  border-radius: 14px;
+  max-width: 70%;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.input-box {
+  display: flex;
+  gap: 10px;
+  padding: 10px 0;
+}
+
+input {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+}
+
+button {
+  padding: 12px 20px;
+  border-radius: 10px;
+  background: #4a6cf7;
+  color: white;
+  border: none;
+  font-size: 15px;
+}
+
+.typing {
+  display: flex;
+  gap: 4px;
+  padding-left: 48px;
+}
+
+.typing span {
+  width: 8px;
+  height: 8px;
+  background: #bbb;
+  border-radius: 50%;
+  animation: blink 1.4s infinite both;
+}
+
+.typing span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes blink {
+  0% { opacity: .2; }
+  20% { opacity: 1; }
+  100% { opacity: .2; }
+}
