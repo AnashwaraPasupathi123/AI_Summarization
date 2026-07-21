@@ -31,7 +31,7 @@ public class QueryController : ControllerBase
 
         var answer = await _llm.AnswerAsync(request.Question, chunkTexts);
 
-        return Ok(new { answer });
+        return Ok(new { answer, sources = relevantChunks.Select(c => c.Id).ToList()});
     }
 }
 public class QueryRequest
