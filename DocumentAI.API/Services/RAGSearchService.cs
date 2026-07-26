@@ -11,10 +11,14 @@ public class RAGSearchService
     {
         _context = context;
     }
-    public async Task<List<Chunk>> SearchAsync(float[] queryEmbedding, int topK = 3)
+    public async Task<List<Chunk>> SearchAsync(float[] queryEmbedding,int documentId, int topK = 3)
     {
-        var chunks = await _context.Chunks.ToListAsync();
-        return chunks
+        var chunks = await _context.Chunks
+                     .Where(c => c.DocumentId == documentId)
+                     .ToListAsync();
+        if (chunks.Count == 0)
+            return new List<Chunk>();
+        var scoredchunks = chunks
               .Select(c=> new
               {
                   Chunk = c,
@@ -24,6 +28,7 @@ public class RAGSearchService
               .Take(topK)
               .Select(x => x.Chunk)
               .ToList();
+        return scoredchunks;
     }
     private float CosineSimilarity(float[] a, float[] b)
     {

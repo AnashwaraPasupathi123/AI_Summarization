@@ -28,10 +28,15 @@ export class UploadComponent {
     if (!this.selectedFile) return;
     const formData = new FormData();
     formData.append('file', this.selectedFile);
-    this.http.post('https://sturdy-space-funicular-55j4v59v6pfvpqw-5253.app.github.dev/api/document/upload', formData)
-      .subscribe({
-        next: () => alert('Document uploaded and processed'),
-        error: () => alert('Upload failed')
-      });
+    fetch('https://sturdy-space-funicular-55j4v59v6pfvpqw-5253.app.github.dev/api/document/upload', {
+    method: 'POST',
+    body: formData,
+    })
+    .then(res => res.json())
+    .then(res => {
+        alert('Document uploaded and processed. Document ID: ' + res.documentId);
+        localStorage.setItem('documentId', res.documentId.toString());
+    })
+    .catch(err => alert('Upload failed'));
   }
 }

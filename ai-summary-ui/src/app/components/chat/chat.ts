@@ -13,6 +13,8 @@ export class ChatComponent {
   question = '';
   messages: any[] = [];
   isTyping = false;
+  pdfUrl: any = null;
+  selectedFile: File | null = null;
   constructor(private queryservice: QueryService, private cd: ChangeDetectorRef){}
   ngOnInit() {
     // Start with a fresh chat view. History is kept in localStorage and
@@ -48,6 +50,47 @@ export class ChatComponent {
   }
     });
   this.question = '';
+  }
+  uploadFile(event:any)
+  {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    this.selectedFile = file;
+      // Show PDF preview inside chat
+  if (file.type === 'application/pdf') {
+    const url = URL.createObjectURL(file);
+    this.pdfUrl = url;
+  }
+
+  const formData = new FormData();
+  formData.append('file', file);
+
+  fetch('https://sturdy-space-funicular-55j4v59v6pfvpqw-5253.app.github.dev/api/document/upload', {
+    method: 'POST',
+    body: formData,
+  })
+    .then(res => res.json())
+    .then(res => {
+      // Store documentId for RAG
+      localStorage.setItem('documentId', res.documentId.toString());
+
+      // Show a system message inside chat
+      const sysMsg = {
+        sender: 'ai',
+        text: `Document uploaded successfully (ID: ${res.documentId}).`
+      };
+      this.messages.push(sysMsg);
+      this.saveToHistory(sysMsg);
+
+      this.scrollToBottom();
+      this.cd.detectChanges();
+    })
+    .catch(err => {
+      const errMsg = { sender: 'ai', text: 'Upload failed.' };
+      this.messages.push(errMsg);
+      this.saveToHistory(errMsg);
+    });
   }
   saveToHistory(msg: any) {
     const history = JSON.parse(localStorage.getItem('history') || '[]');

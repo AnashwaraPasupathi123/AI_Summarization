@@ -23,9 +23,15 @@ public class QueryController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Ask([FromBody] QueryRequest request)
     {
+            if (string.IsNullOrWhiteSpace(request.Question))
+                 return BadRequest("Question is required");
+
+            if (request.DocumentId <= 0)
+                  return BadRequest("DocumentId is required");
+
         var queryEmbedding = await _embedder.GetEmbeddingAsync(request.Question);
 
-        var relevantChunks = await _rag.SearchAsync(queryEmbedding);
+        var relevantChunks = await _rag.SearchAsync(queryEmbedding, request.DocumentId);
 
         var chunkTexts = relevantChunks.Select(c => c.Content).ToList();
 
@@ -37,4 +43,5 @@ public class QueryController : ControllerBase
 public class QueryRequest
 {
     public string Question { get; set; }
+    public int DocumentId { get; set; }
 }

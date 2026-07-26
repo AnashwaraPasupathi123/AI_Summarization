@@ -1,27 +1,50 @@
-<div class="chat-container">
+<div class="chat-wrapper">
 
+  <!-- Messages -->
   <div class="messages">
-    <div *ngFor="let msg of messages" class="msg-row" 
-     [ngClass]="msg.sender">
+    <div *ngFor="let msg of messages" class="msg-row" [ngClass]="msg.sender">
 
-  <img *ngIf="msg.sender === 'ai'" 
-       src="https://cdn-icons-png.flaticon.com/512/4712/4712100.png"
-       class="avatar">
+      <!-- Avatar -->
+      <img 
+        *ngIf="msg.sender === 'ai'" 
+        src="https://cdn-icons-png.flaticon.com/512/4712/4712100.png"
+        class="avatar">
 
-  <div class="bubble">
-    {{ msg.text }}
-  </div>
+      <img 
+        *ngIf="msg.sender === 'user'" 
+        src="https://cdn-icons-png.flaticon.com/512/1946/1946429.png"
+        class="avatar">
 
-</div>
+      <!-- Bubble -->
+      <div class="bubble">
+        {{ msg.text }}
+      </div>
+
+    </div>
+
+    <!-- PDF Preview -->
+    <div *ngIf="pdfUrl" class="pdf-preview">
+      <iframe [src]="pdfUrl"></iframe>
+    </div>
+
+    <!-- Typing Indicator -->
     <div *ngIf="isTyping" class="typing">
-        <span></span><span></span><span></span>
+      <span></span><span></span><span></span>
     </div>
   </div>
 
-  <div class="input-box">
-    <input [(ngModel)]="question" placeholder="Ask anything…" />
-    <button (click)="send()">Send</button>
+  <!-- Input Area -->
+  <div class="chat-input">
+
+    <!-- Hidden File Input -->
+    <input type="file" hidden #fileInput (change)="uploadFile($event)" />
+
+    <!-- Upload Button -->
+    <button class="upload-btn" (click)="fileInput.click()">+</button>
+
+  <input [(ngModel)]="question" placeholder="Ask anything…" />
+  <button (click)="send()">Send</button>
+
   </div>
 
 </div>
-

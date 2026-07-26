@@ -16,6 +16,7 @@ export class QueryService {
   constructor(private http: HttpClient) {}
 
   ask(question: string): Observable<QueryResponse>{
-    return this.http.post<QueryResponse>(this.apiUrl, { question });
+    const documentId = Number(localStorage.getItem('documentId'));
+    return this.http.post<QueryResponse>(this.apiUrl, { question, documentId});
   }
 }
